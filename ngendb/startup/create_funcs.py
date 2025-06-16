@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 import os 
 import sqlite3
-from db_calculate.utils.io_utils import zip_csv
+from ngendb.startup.io_utils import zip_csv
 
 def create_new_duckdb_from_sqllite(sqlite_db, duckdb_db, merged_csv, remove_duckdb=False):
     # Remove DuckDB if it exists
