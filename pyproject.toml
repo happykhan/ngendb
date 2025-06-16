@@ -1,0 +1,118 @@
+[project]
+name = "ngendb"
+version = "0.1.0"
+description = "Genomic analytics on assembled data"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Nabil-Fareed Alikhan", email = "nabil@happykhan.com"},
+]
+maintainers = [
+    {name = "Nabil-Fareed Alikhan", email = "nabil@happykhan.com"},
+]
+requires-python = ">=3.9,<3.13"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+keywords = ["bioinformatics", "genomics"]
+dependencies = [
+    "dagster>=1.10.19,<2",
+    "dagster-cloud",
+    "dagster-duckdb>=0.26.19",
+    "dagster-duckdb-pandas>=0.26.19",
+    "duckdb>=1.3.0",
+    "pandas>=1.5.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/happykhan/ngendb"
+Repository = "https://github.com/happykhan/ngendb.git"
+Issues = "https://github.com/happykhan/ngendb/issues"
+Changelog = "https://github.com/happykhan/ngendb/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/happykhan/ngendb#readme"
+
+[project.optional-dependencies]
+dev = [
+    "dagster-webserver", 
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.dagster]
+module_name = "ngendb.definitions"
+code_location_name = "ngendb"
+
+[tool.setuptools.packages.find]
+exclude=["ngendb_tests"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "dagster.*",
+    "dagster_duckdb.*",
+    "dagster_duckdb_pandas.*", 
+    "duckdb.*",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["ubio_autobox_tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+[tool.coverage.run]
+source = ["ngendb"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
