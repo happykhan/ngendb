@@ -1,6 +1,6 @@
 import typer
 import logging 
-from db_calculate.create.create_funcs import create_new_duckdb_from_sqllite
+from ngendb.create.create_funcs import create_new_duckdb_from_sqllite
 
 logging.basicConfig(
     level=logging.INFO,

@@ -61,21 +61,21 @@ def export_table(
 def report_taxa_counts(
     min_count: int = typer.Option(1, help="Minimum count to report"),
     output: str = typer.Option('species_counts.tsv', help="Output TSV file"),
-    taxon: str = typer.Option('species', help="Taxonomic rank to count (species or genus)", default='species', show_choices=True, case_sensitive=False),
+    taxon_level: str = typer.Option(default='species', help="Taxonomic rank to count (species or genus)",show_choices=True, case_sensitive=False),
 ):
     """Write a count of rows for all taxa in all tables that have the specified taxon column, only showing those with at least min_count rows, to a file."""
     duckdb_path = "nfbac.atb202408.duckdb"
     con = duckdb.connect(duckdb_path)
     # Find tables with the selected taxon column
-    tables = con.execute(f"SELECT table_name FROM information_schema.columns WHERE column_name = '{taxon}'").fetchall()
+    tables = con.execute(f"SELECT table_name FROM information_schema.columns WHERE column_name = '{taxon_level}'").fetchall()
     with open(output, 'w') as out:
         for (table_name,) in tables:
-            result = con.execute(f"SELECT {taxon}, COUNT(*) as count FROM {table_name} GROUP BY {taxon} HAVING count >= {min_count} ORDER BY count DESC")
+            result = con.execute(f"SELECT {taxon_level}, COUNT(*) as count FROM {table_name} GROUP BY {taxon_level} HAVING count >= {min_count} ORDER BY count DESC")
             if result.fetchone() is not None:
-                out.write(f"# {taxon} counts in table '{table_name}' (min_count={min_count}):\n")
-                con.execute(f"COPY (SELECT {taxon}, COUNT(*) as count FROM {table_name} GROUP BY {taxon} HAVING count >= {min_count} ORDER BY count DESC) TO '{output}' (HEADER, DELIMITER '\t')")
+                out.write(f"# {taxon_level} counts in table '{table_name}' (min_count={min_count}):\n")
+                con.execute(f"COPY (SELECT {taxon_level}, COUNT(*) as count FROM {table_name} GROUP BY {taxon_level} HAVING count >= {min_count} ORDER BY count DESC) TO '{output}' (HEADER, DELIMITER '\t')")
     con.close()
-    typer.echo(f"{taxon} counts written to {output}")
+    typer.echo(f"{taxon_level} counts written to {output}")
 
 def describe_duckdb(duckdb_path, output_file='duckdb_description.txt'):
     """
